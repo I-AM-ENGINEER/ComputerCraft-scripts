@@ -17,49 +17,69 @@ if not depth or depth <= 0 then
     return
 end
 
--- Надежная функция движения вперед
-local function safeForward()
-    while not turtle.forward() do
-        if turtle.detect() then
-            turtle.dig()
-        elseif turtle.attack() then
-            -- Если впереди моб, атакуем
-            print("Mob detected, attacking...")
-        else
-            print("Unable to move forward, retrying...")
-            sleep(0.5)
-        end
+local function goForward(blocks)
+	for i = 1, blocks do
+	    while not turtle.forward() do
+		    turtle.dig()
+		    sleep(0.2)
+	    end
+	end
+end
+
+local function goDown(blocks)
+	for i = 1, blocks do
+	    while not turtle.down() do
+		    turtle.digDown()
+		    sleep(0.2)
+	    end
+	end
+end
+
+local function goUp(blocks)
+	for i = 1, blocks do
+	    while not turtle.up() do
+		    turtle.digUp()
+		    sleep(0.2)
+	    end
+	end
+end
+
+local function digDownN(n)
+    for i = 1, n do
+        turtle.digDown()
+        goDown(1)
     end
 end
 
--- Надежная функция копания вниз
-local function digDownN(n)
-    for i = 1, n do
-        while not turtle.digDown() do
-            if turtle.detectDown() then
-                print("Block below detected, retrying dig...")
-                sleep(0.5)
-            else
-                break
-            end
-        end
-        if not turtle.down() then
-            print("Unable to move down, retrying...")
-            sleep(0.5)
-            i = i - 1 -- Повторяем попытку
+
+local function findBlock(max_len)
+    local forward_blocks = 0
+    while not turtle.detect() do
+        goForward(1)
+        forward_blocks = forward_blocks + 1
+
+        if forward_blocks > max_len then
+            return -1
         end
     end
+    return forward_blocks
 end
 
 -- Основной алгоритм
+
 while true do
-    if turtle.detect() then
-        print("Block detected ahead, starting to dig down...")
+    local forward_blocks = findBlock(100)
+    if forward_blocks >= 0 then
         digDownN(depth)
+        goUp(depth)
+    end
+    turnLeft()
+    turnLeft()
+    goForward(forward_blocks)
+    turnLeft()
+    turnLeft()
+    if forward_blocks < 0 then
         break
-    else
-        safeForward()
     end
 end
-
 print("Task completed.")
