@@ -2,9 +2,9 @@
 -- 2 argument - max tunnel length (in right direction)
 -- 3 argument - tunels period in blocks
 
---local height = tonumber(arg[1])
---local length = tonumber(arg[2])
---local space_betwen_rows = tonumber(arg[3])
+local height = tonumber(arg[1])
+local length = tonumber(arg[2])
+local tunnel_steps = tonumber(arg[3])
 
 -- Уникальный ID черепахи
 local id = os.getComputerID()
@@ -158,6 +158,7 @@ local function mineTunnel(length, height)
       goForward(forward_digged)
       turtle.turnLeft()
       turtle.turnLeft()
+      return forward_digged
     end
 
     if isInventoryFull() then
@@ -167,7 +168,7 @@ local function mineTunnel(length, height)
       goForward(forward_digged)
       turtle.turnLeft()
       turtle.turnLeft()
-      return
+      return forward_digged
     end
   end
   return forward_digged
@@ -291,10 +292,10 @@ local function abortIfNeedsResupply()
   return true
 end
 
-local starting_position = 3
-local tunnel_steps = 3
-local height = 1
-local length = 1
+local starting_position = 1
+--local tunnel_steps = 3
+--local height = 1
+--local length = 1
 
 while true do
   if hasModem then rednet.open(modemSide) end
