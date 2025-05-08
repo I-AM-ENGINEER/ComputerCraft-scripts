@@ -65,6 +65,15 @@ local function findBlock(max_len)
     return forward_blocks
 end
 
+local function isInventoryEmpty()
+    for slot = 1, 16 do
+      if turtle.getItemCount(slot) > 0 then
+        return false
+      end
+    end
+    return true
+  end
+
 local function refuelAndUnload()
     turtle.turnLeft()
     turtle.turnLeft()
