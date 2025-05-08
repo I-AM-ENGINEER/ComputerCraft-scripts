@@ -73,11 +73,11 @@ while true do
         digDownN(depth)
         goUp(depth)
     end
-    turnLeft()
-    turnLeft()
+    turtle.turnLeft()
+    turtle.turnLeft()
     goForward(forward_blocks)
-    turnLeft()
-    turnLeft()
+    turtle.turnLeft()
+    turtle.turnLeft()
     if forward_blocks < 0 then
         break
     end
