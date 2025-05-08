@@ -5,8 +5,8 @@
 local tArgs = { ... }
 
 -- Проверяем, передан ли аргумент
-if #tArgs < 1 then
-    print("Usage: NetherChunkDestroyer <N>")
+if #tArgs < 2 then
+    print("Usage: NetherChunkDestroyer <N> <L>")
     return
 end
 
@@ -14,6 +14,13 @@ end
 local depth = tonumber(tArgs[1])
 if not depth or depth <= 0 then
     print("Error: N must be a positive number.")
+    return
+end
+
+-- Количество блоков для копания вниз
+local length = tonumber(tArgs[2])
+if not length or length <= 0 then
+    print("Error: L must be a positive number.")
     return
 end
 
@@ -137,7 +144,7 @@ while true do
         refuelAndUnload()
     end
 
-    local forward_blocks = findBlock(100)
+    local forward_blocks = findBlock(length)
     if forward_blocks >= 0 then
         forward_blocks = forward_blocks + 1 
         goForward(1)
