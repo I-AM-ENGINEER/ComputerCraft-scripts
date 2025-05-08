@@ -5,7 +5,6 @@ function moveForwardReliable()
         sleep(0.5) -- Small delay to avoid infinite loops
     end
 end
-end
 
 -- Function to create a vertical tunnel section 5x5 using a ComputerCraft turtle
 function dig5x5Layer()
@@ -39,16 +38,27 @@ function dig5x5Layer()
     end
     turtle.turnLeft()
 end
-function createVerticalTunnel(height)
-    for i = 1, height do
+
+
+function createVerticalTunnel(targetY)
+    while true do
+        local _, y = gps.locate()
+        if y == nil then
+            print("GPS signal not found. Ensure the turtle has access to GPS.")
+            return
+        end
+        if y <= targetY then
+            break
+        end
         dig5x5Layer()
-        if i < height then
+        if y > targetY then
             -- Move down to the next layer
             turtle.down()
         end
     end
 end
 
+print("Step 1 - create vertical tunnel")
 -- Example usage: Create a vertical tunnel 5x5 with a height of 10
 createVerticalTunnel(10)
 
