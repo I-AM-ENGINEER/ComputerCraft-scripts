@@ -65,11 +65,73 @@ local function findBlock(max_len)
     return forward_blocks
 end
 
--- Основной алгоритм
+local function refuelAndUnload()
+    turtle.turnLeft()
+    turtle.turnLeft()
+    for slot = 1, 16 do
+      turtle.select(slot)
+      if turtle.getItemCount(slot) > 0 then
+        turtle.drop()
+      end
+    end
+    
+    if turtle.getFuelLevel() ~= "unlimited" and turtle.getFuelLevel() < 2000 then
+      print("Fuel low, refueling...")
+  
+      for slot = 1, 16 do
+        turtle.select(slot)
+        if turtle.getItemCount(slot) == 0 then
+          if turtle.suckUp(64) then
+            if turtle.refuel() then
+              print("Refueled from up chest.")
+              break
+            else
+              print("Item not valid fuel.")
+              turtle.drop()
+            end
+          end
+        end
+      end
+    end
+  
+    turtle.select(1)
+
+    turtle.turnLeft()
+    turtle.turnLeft()
+  end
+
+local function abortIfNeedsResupply()
+    local fuel = turtle.getFuelLevel()
+    local needsRefuel = fuel ~= "unlimited" and fuel < 500
+    local hasItems = not isInventoryEmpty()
+  
+    if needsRefuel or hasItems then
+      print("== Awaiting user action ==")
+      if needsRefuel then
+        print("Fuel low: " .. fuel)
+      end
+      if hasItems then
+        print("Inventory not empty")
+      end
+      print("Press any key to continue...")
+
+      os.pullEvent("key")  -- pause until key press
+      return false
+    end
+    return true
+end
+
 
 while true do
+    refuelAndUnload()
+    while abortIfNeedsResupply() == false do
+        refuelAndUnload()
+    end
+
     local forward_blocks = findBlock(100)
     if forward_blocks >= 0 then
+        forward_blocks = forward_blocks + 1 
+        goForward(1)
         digDownN(depth)
         goUp(depth)
     end
