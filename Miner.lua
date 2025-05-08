@@ -284,18 +284,14 @@ local function abortIfNeedsResupply()
       print("Inventory not empty")
       sendStatus("Waiting for unload (inventory not empty)")
     end
-    print("Press any key to continue...")
 
-    os.pullEvent("key")  -- pause until key press
+    sleep(30)
     return false
   end
   return true
 end
 
 local starting_position = 1
---local tunnel_steps = 3
---local height = 1
---local length = 1
 
 while true do
   if hasModem then rednet.open(modemSide) end
