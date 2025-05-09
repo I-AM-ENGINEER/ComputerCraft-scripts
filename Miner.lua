@@ -5,6 +5,7 @@
 local height = tonumber(arg[1])
 local length = tonumber(arg[2])
 local tunnel_steps = tonumber(arg[3])
+local max_depth = tonumber(arg[4]) or 9999
 
 -- Уникальный ID черепахи
 local id = os.getComputerID()
@@ -12,8 +13,23 @@ local modemSide = "back"
 local hasModem = peripheral.getType(modemSide) == "modem"
 
 local function isOre(blockName)
-  return blockName and blockName:match("_ore$")
+  if not blockName then return false end
+
+  if blockName:match("_ore$") then
+    return true
+  end
+
+  local knownOres = {
+    ["create:ochrum"] = true,
+    ["create:veridium"] = true,
+    ["create:crimsite"] = true,
+    ["create:asurine"] = true,
+    ["xycraft_world:aluminium_ore"] = true
+  }
+
+  return knownOres[blockName] == true
 end
+
 
 local function inspectAndDig(direction)
   local inspect, dig, move, back
@@ -148,26 +164,16 @@ local function mineTunnel(length, height)
   local forward_digged = 0
   for i = 1, length do
     forwardDig(height)
-	dropTrashBlocks()
+	  dropTrashBlocks()
     forward_digged = forward_digged + 1
 
     if turtle.getFuelLevel() ~= "unlimited" and turtle.getFuelLevel() < 500 then
       print("Low fuel: returning early.")
-      turtle.turnLeft()
-      turtle.turnLeft()
-      goForward(forward_digged)
-      turtle.turnLeft()
-      turtle.turnLeft()
       return forward_digged
     end
 
     if isInventoryFull() then
       print("Inventory full: returning.")
-      turtle.turnLeft()
-      turtle.turnLeft()
-      goForward(forward_digged)
-      turtle.turnLeft()
-      turtle.turnLeft()
       return forward_digged
     end
   end
@@ -315,5 +321,10 @@ while true do
   goForward(block_mined)
   goToHome(new_start, direction)
   starting_position = new_start
-  print(new_start)
+  if starting_position > max_depth then
+    break
+  end
 end
+
+
+sendStatus("Program ended")

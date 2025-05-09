@@ -1,23 +1,16 @@
--- NetherChunkDestroyer.lua
--- Скрипт для ComputerCraft, который едет вперед, пока не наткнется на блок,
--- затем копает вниз на указанное количество блоков.
-
 local tArgs = { ... }
 
--- Проверяем, передан ли аргумент
 if #tArgs < 2 then
     print("Usage: NetherChunkDestroyer <N> <L>")
     return
 end
 
--- Количество блоков для копания вниз
 local depth = tonumber(tArgs[1])
 if not depth or depth <= 0 then
     print("Error: N must be a positive number.")
     return
 end
 
--- Количество блоков для копания вниз
 local length = tonumber(tArgs[2])
 if not length or length <= 0 then
     print("Error: L must be a positive number.")
